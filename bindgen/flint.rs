@@ -37406,6 +37406,345 @@ unsafe extern "C" {
         c: slong,
         ctx: *const fq_ctx_struct,
     ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_init(
+        mat: *mut fq_mat_struct,
+        rows: slong,
+        cols: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_init_set(
+        mat: *mut fq_mat_struct,
+        src: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_nrows(
+        mat: *const fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_ncols(
+        mat: *const fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_entry(mat: *const fq_mat_struct, i: slong, j: slong) -> *mut fq_struct;
+    pub fn fq_mat_entry_set(
+        mat: *mut fq_mat_struct,
+        i: slong,
+        j: slong,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_swap(
+        mat1: *mut fq_mat_struct,
+        mat2: *mut fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_swap_entrywise(
+        mat1: *mut fq_mat_struct,
+        mat2: *mut fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_set(
+        mat1: *mut fq_mat_struct,
+        mat2: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_clear(mat: *mut fq_mat_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_mat_equal(
+        mat1: *const fq_mat_struct,
+        mat2: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_is_zero(
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_is_one(
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_is_empty(
+        mat: *const fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_is_square(
+        mat: *const fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_swap_rows(
+        mat: *mut fq_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_invert_rows(
+        mat: *mut fq_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_swap_cols(
+        mat: *mut fq_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_invert_cols(
+        mat: *mut fq_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_zero(A: *mut fq_mat_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_mat_one(A: *mut fq_mat_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_mat_set_nmod_mat(
+        mat1: *mut fq_mat_struct,
+        mat2: *const nmod_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_set_fmpz_mod_mat(
+        mat1: *mut fq_mat_struct,
+        mat2: *const fmpz_mod_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_window_init(
+        window: *mut fq_mat_struct,
+        mat: *const fq_mat_struct,
+        r1: slong,
+        c1: slong,
+        r2: slong,
+        c2: slong,
+        UNUSED_ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_window_clear(
+        UNUSED_window: *mut fq_mat_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_concat_horizontal(
+        res: *mut fq_mat_struct,
+        mat1: *const fq_mat_struct,
+        mat2: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_concat_vertical(
+        res: *mut fq_mat_struct,
+        mat1: *const fq_mat_struct,
+        mat2: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_fprint(
+        file: *mut FILE,
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_fprint_pretty(
+        file: *mut FILE,
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_print(
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_print_pretty(
+        mat: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_randtest(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_randrank(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        rank: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_randpermdiag(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        diag: *mut fq_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_randops(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        count: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_randtril(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_randtriu(
+        mat: *mut fq_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_transpose(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_add(
+        C: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_sub(
+        C: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_neg(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_submul(
+        D: *mut fq_mat_struct,
+        C: *const fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_scalar_mul(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        c: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_scalar_mul_fmpz(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        c: *const fmpz,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_scalar_mul_si(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        c: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_scalar_mul_ui(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        c: ulong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_mul(
+        C: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_mul_classical(
+        C: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_mul_KS(
+        C: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_lu(
+        P: *mut slong,
+        A: *mut fq_mat_struct,
+        rank_check: ::std::os::raw::c_int,
+        ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_inv(
+        B: *mut fq_mat_struct,
+        A: *mut fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_rref(
+        B: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_reduce_row(
+        A: *mut fq_mat_struct,
+        P: *mut slong,
+        L: *mut slong,
+        m: slong,
+        ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_nullspace(
+        X: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_mat_rank(A: *const fq_mat_struct, ctx: *const fq_ctx_struct) -> slong;
+    pub fn fq_mat_solve_tril(
+        X: *mut fq_mat_struct,
+        L: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_solve_triu(
+        X: *mut fq_mat_struct,
+        U: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_mul_vec(
+        c: *mut fq_struct,
+        A: *const fq_mat_struct,
+        b: *const fq_struct,
+        blen: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_mul_vec_ptr(
+        c: *const *mut fq_struct,
+        A: *const fq_mat_struct,
+        b: *const *const fq_struct,
+        blen: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_vec_mul(
+        c: *mut fq_struct,
+        a: *const fq_struct,
+        alen: slong,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_vec_mul_ptr(
+        c: *const *mut fq_struct,
+        a: *const *const fq_struct,
+        alen: slong,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_mat_solve(
+        X: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        C: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_can_solve(
+        X: *mut fq_mat_struct,
+        A: *const fq_mat_struct,
+        B: *const fq_mat_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_mat_similarity(
+        A: *mut fq_mat_struct,
+        r: slong,
+        d: *mut fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
 }
 
 
@@ -37780,6 +38119,355 @@ unsafe extern "C" {
         c: slong,
         ctx: *const fq_nmod_ctx_struct,
     ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_init(
+        mat: *mut fq_nmod_mat_struct,
+        rows: slong,
+        cols: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_init_set(
+        mat: *mut fq_nmod_mat_struct,
+        src: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_nrows(
+        mat: *const fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_ncols(
+        mat: *const fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_entry(
+        mat: *const fq_nmod_mat_struct,
+        i: slong,
+        j: slong,
+    ) -> *mut fq_nmod_struct;
+    pub fn fq_nmod_mat_entry_set(
+        mat: *mut fq_nmod_mat_struct,
+        i: slong,
+        j: slong,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_swap(
+        mat1: *mut fq_nmod_mat_struct,
+        mat2: *mut fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_swap_entrywise(
+        mat1: *mut fq_nmod_mat_struct,
+        mat2: *mut fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_set(
+        mat1: *mut fq_nmod_mat_struct,
+        mat2: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_clear(
+        mat: *mut fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_equal(
+        mat1: *const fq_nmod_mat_struct,
+        mat2: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_is_zero(
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_is_one(
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_is_empty(
+        mat: *const fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_is_square(
+        mat: *const fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_swap_rows(
+        mat: *mut fq_nmod_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_invert_rows(
+        mat: *mut fq_nmod_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_swap_cols(
+        mat: *mut fq_nmod_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_invert_cols(
+        mat: *mut fq_nmod_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_zero(A: *mut fq_nmod_mat_struct, ctx: *const fq_nmod_ctx_struct);
+    pub fn fq_nmod_mat_one(A: *mut fq_nmod_mat_struct, ctx: *const fq_nmod_ctx_struct);
+    pub fn fq_nmod_mat_set_nmod_mat(
+        mat1: *mut fq_nmod_mat_struct,
+        mat2: *const nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_set_fmpz_mod_mat(
+        mat1: *mut fq_nmod_mat_struct,
+        mat2: *const fmpz_mod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_window_init(
+        window: *mut fq_nmod_mat_struct,
+        mat: *const fq_nmod_mat_struct,
+        r1: slong,
+        c1: slong,
+        r2: slong,
+        c2: slong,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_window_clear(
+        UNUSED_window: *mut fq_nmod_mat_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_concat_horizontal(
+        res: *mut fq_nmod_mat_struct,
+        mat1: *const fq_nmod_mat_struct,
+        mat2: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_concat_vertical(
+        res: *mut fq_nmod_mat_struct,
+        mat1: *const fq_nmod_mat_struct,
+        mat2: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_fprint(
+        file: *mut FILE,
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_fprint_pretty(
+        file: *mut FILE,
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_print(
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_print_pretty(
+        mat: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_randtest(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_randrank(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        rank: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_randpermdiag(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        diag: *mut fq_nmod_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_randops(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        count: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_randtril(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_randtriu(
+        mat: *mut fq_nmod_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_transpose(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_add(
+        C: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_sub(
+        C: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_neg(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_submul(
+        D: *mut fq_nmod_mat_struct,
+        C: *const fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_scalar_mul(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        c: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_scalar_mul_fmpz(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        c: *const fmpz,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_scalar_mul_si(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        c: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_scalar_mul_ui(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        c: ulong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_mul(
+        C: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_mul_classical(
+        C: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_mul_KS(
+        C: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_lu(
+        P: *mut slong,
+        A: *mut fq_nmod_mat_struct,
+        rank_check: ::std::os::raw::c_int,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_inv(
+        B: *mut fq_nmod_mat_struct,
+        A: *mut fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_rref(
+        B: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_reduce_row(
+        A: *mut fq_nmod_mat_struct,
+        P: *mut slong,
+        L: *mut slong,
+        m: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_nullspace(
+        X: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_rank(
+        A: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_mat_solve_tril(
+        X: *mut fq_nmod_mat_struct,
+        L: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_solve_triu(
+        X: *mut fq_nmod_mat_struct,
+        U: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_mul_vec(
+        c: *mut fq_nmod_struct,
+        A: *const fq_nmod_mat_struct,
+        b: *const fq_nmod_struct,
+        blen: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_mul_vec_ptr(
+        c: *const *mut fq_nmod_struct,
+        A: *const fq_nmod_mat_struct,
+        b: *const *const fq_nmod_struct,
+        blen: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_vec_mul(
+        c: *mut fq_nmod_struct,
+        a: *const fq_nmod_struct,
+        alen: slong,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_vec_mul_ptr(
+        c: *const *mut fq_nmod_struct,
+        a: *const *const fq_nmod_struct,
+        alen: slong,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_mat_solve(
+        X: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        C: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_can_solve(
+        X: *mut fq_nmod_mat_struct,
+        A: *const fq_nmod_mat_struct,
+        B: *const fq_nmod_mat_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_mat_similarity(
+        A: *mut fq_nmod_mat_struct,
+        r: slong,
+        d: *mut nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
 }
 
 
@@ -40429,6 +41117,697 @@ unsafe extern "C" {
 
 /* fq_nmod_poly.h */
 
+unsafe extern "C" {
+    pub fn fq_nmod_poly_init(
+        poly: *mut fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_init2(
+        poly: *mut fq_nmod_poly_struct,
+        alloc: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_realloc(
+        poly: *mut fq_nmod_poly_struct,
+        alloc: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_truncate(
+        poly: *mut fq_nmod_poly_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_trunc(
+        poly1: *mut fq_nmod_poly_struct,
+        poly2: *mut fq_nmod_poly_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_fit_length(
+        poly: *mut fq_nmod_poly_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_clear(
+        poly: *mut fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_length(
+        poly: *const fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_poly_degree(
+        poly: *const fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_poly_lead(
+        poly: *const fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> *mut fq_nmod_struct;
+    pub fn fq_nmod_poly_randtest(
+        f: *mut fq_nmod_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_randtest_not_zero(
+        f: *mut fq_nmod_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_randtest_monic(
+        f: *mut fq_nmod_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_randtest_irreducible(
+        f: *mut fq_nmod_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_fq_nmod(
+        poly: *mut fq_nmod_poly_struct,
+        c: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_fmpz_mod_poly(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fmpz_mod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_nmod_poly(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_swap(
+        op1: *mut fq_nmod_poly_struct,
+        op2: *mut fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_zero(
+        poly: *mut fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_one(
+        poly: *mut fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_gen(f: *mut fq_nmod_poly_struct, ctx: *const fq_nmod_ctx_struct);
+    pub fn fq_nmod_poly_make_monic(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_reverse(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_deflation(
+        input: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ulong;
+    pub fn fq_nmod_poly_deflate(
+        result: *mut fq_nmod_poly_struct,
+        input: *const fq_nmod_poly_struct,
+        deflation: ulong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_inflate(
+        result: *mut fq_nmod_poly_struct,
+        input: *const fq_nmod_poly_struct,
+        inflation: ulong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_get_coeff(
+        x: *mut nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_coeff(
+        poly: *mut fq_nmod_poly_struct,
+        n: slong,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_set_coeff_fmpz(
+        poly: *mut fq_nmod_poly_struct,
+        n: slong,
+        x: *const fmpz,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_is_gen(
+        poly: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_equal(
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_equal_trunc(
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_is_zero(
+        poly: *const fq_nmod_poly_struct,
+        UNUSED_ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_is_one(
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_is_unit(
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_equal_fq_nmod(
+        poly: *const fq_nmod_poly_struct,
+        c: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_add(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_add_si(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        c: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_add_series(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sub(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sub_series(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_neg(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_scalar_mul_fq_nmod(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_scalar_div_fq_nmod(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_scalar_addmul_fq_nmod(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_scalar_submul_fq_nmod(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        x: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mul_classical(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mul_reorder(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mul_univariate(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mul_KS(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mul(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mullow_classical(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mullow_KS(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mullow_univariate(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mullow(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mulhigh_classical(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        start: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mulhigh(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        start: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mulmod(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        f: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_mulmod_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        f: *const fq_nmod_poly_struct,
+        finv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqr_classical(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqr_reorder(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqr_KS(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqr(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_pow(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        e: ulong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_pow_trunc_binexp(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_pow_trunc(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_fmpz_binexp(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: *const fmpz,
+        f: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_fmpz_binexp_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: *const fmpz,
+        f: *const fq_nmod_poly_struct,
+        finv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_ui_binexp(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: ulong,
+        f: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_ui_binexp_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: ulong,
+        f: *const fq_nmod_poly_struct,
+        finv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_fmpz_sliding_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly: *const fq_nmod_poly_struct,
+        e: *const fmpz,
+        k: ulong,
+        f: *const fq_nmod_poly_struct,
+        finv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_powmod_x_fmpz_preinv(
+        res: *mut fq_nmod_poly_struct,
+        e: *const fmpz,
+        f: *const fq_nmod_poly_struct,
+        finv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_shift_left(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_shift_right(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_hamming_weight(
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> slong;
+    pub fn fq_nmod_poly_gcd_euclidean(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_gcd(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_gcd_euclidean_f(
+        f: *mut nmod_poly_struct,
+        G: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_xgcd_euclidean_f(
+        f: *mut nmod_poly_struct,
+        G: *mut fq_nmod_poly_struct,
+        S: *mut fq_nmod_poly_struct,
+        fq_nmod: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_xgcd(
+        G: *mut fq_nmod_poly_struct,
+        S: *mut fq_nmod_poly_struct,
+        fq_nmod: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_remove(
+        f: *mut fq_nmod_poly_struct,
+        g: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ulong;
+    pub fn fq_nmod_poly_div(
+        Q: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_div_basecase(
+        Q: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_divrem(
+        Q: *mut fq_nmod_poly_struct,
+        R: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_rem(
+        R: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_inv_series_newton(
+        Qinv: *mut fq_nmod_poly_struct,
+        Q: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_inv_series(
+        Qinv: *mut fq_nmod_poly_struct,
+        Q: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_div_series(
+        Q: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_div_newton_n_preinv(
+        Q: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        Binv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_divrem_newton_n_preinv(
+        Q: *mut fq_nmod_poly_struct,
+        R: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        Binv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_divrem_f(
+        f: *mut nmod_poly_struct,
+        Q: *mut fq_nmod_poly_struct,
+        R: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_divides(
+        Q: *mut fq_nmod_poly_struct,
+        A: *const fq_nmod_poly_struct,
+        B: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_derivative(
+        rop: *mut fq_nmod_poly_struct,
+        op: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_invsqrt_series(
+        g: *mut fq_nmod_poly_struct,
+        h: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *mut fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqrt_series(
+        g: *mut fq_nmod_poly_struct,
+        h: *const fq_nmod_poly_struct,
+        n: slong,
+        ctx: *mut fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_sqrt(
+        b: *mut fq_nmod_poly_struct,
+        a: *const fq_nmod_poly_struct,
+        ctx: *mut fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_evaluate_fq_nmod(
+        res: *mut nmod_poly_struct,
+        f: *const fq_nmod_poly_struct,
+        a: *const nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_evaluate_fq_nmod_vec(
+        ys: *mut fq_nmod_struct,
+        poly: *const fq_nmod_poly_struct,
+        xs: *const fq_nmod_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_evaluate_fq_nmod_vec_fast(
+        ys: *mut fq_nmod_struct,
+        poly: *const fq_nmod_poly_struct,
+        xs: *const fq_nmod_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_evaluate_fq_nmod_vec_iter(
+        ys: *mut fq_nmod_struct,
+        poly: *const fq_nmod_poly_struct,
+        xs: *const fq_nmod_struct,
+        n: slong,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose(
+        rop: *mut fq_nmod_poly_struct,
+        op1: *const fq_nmod_poly_struct,
+        op2: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        poly3inv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_horner(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_horner_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        poly3inv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_brent_kung(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_brent_kung_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly3: *const fq_nmod_poly_struct,
+        poly3inv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_precompute_matrix(
+        A: *mut fq_nmod_mat_struct,
+        poly1: *const fq_nmod_poly_struct,
+        poly2: *const fq_nmod_poly_struct,
+        poly2inv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_compose_mod_brent_kung_precomp_preinv(
+        res: *mut fq_nmod_poly_struct,
+        poly1: *const fq_nmod_poly_struct,
+        A: *const fq_nmod_mat_struct,
+        poly3: *const fq_nmod_poly_struct,
+        poly3inv: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    );
+    pub fn fq_nmod_poly_fprint_pretty(
+        file: *mut FILE,
+        poly: *const fq_nmod_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_fprint(
+        file: *mut FILE,
+        poly: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_print(
+        poly: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_print_pretty(
+        poly: *const fq_nmod_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_nmod_poly_get_str_pretty(
+        poly: *const fq_nmod_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+    pub fn fq_nmod_poly_get_str(
+        poly: *const fq_nmod_poly_struct,
+        ctx: *const fq_nmod_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+}
 
 
 /* fq_nmod_poly_factor.h */
@@ -40550,6 +41929,685 @@ pub type fq_nmod_mpoly_t = [fq_nmod_mpoly_struct; 1usize];
 
 /* fq_poly.h */
 
+unsafe extern "C" {
+    pub fn fq_poly_init(poly: *mut fq_poly_struct, UNUSED_ctx: *const fq_ctx_struct);
+    pub fn fq_poly_init2(
+        poly: *mut fq_poly_struct,
+        alloc: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_realloc(
+        poly: *mut fq_poly_struct,
+        alloc: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_truncate(
+        poly: *mut fq_poly_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_trunc(
+        poly1: *mut fq_poly_struct,
+        poly2: *mut fq_poly_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_fit_length(
+        poly: *mut fq_poly_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_clear(poly: *mut fq_poly_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_poly_length(
+        poly: *const fq_poly_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_poly_degree(
+        poly: *const fq_poly_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_poly_lead(
+        poly: *const fq_poly_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> *mut fq_struct;
+    pub fn fq_poly_randtest(
+        f: *mut fq_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_randtest_not_zero(
+        f: *mut fq_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_randtest_monic(
+        f: *mut fq_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_randtest_irreducible(
+        f: *mut fq_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_fq(
+        poly: *mut fq_poly_struct,
+        c: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_fmpz_mod_poly(
+        rop: *mut fq_poly_struct,
+        op: *const fmpz_mod_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_nmod_poly(
+        rop: *mut fq_poly_struct,
+        op: *const nmod_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_swap(
+        op1: *mut fq_poly_struct,
+        op2: *mut fq_poly_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_zero(poly: *mut fq_poly_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_poly_one(poly: *mut fq_poly_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_poly_gen(f: *mut fq_poly_struct, ctx: *const fq_ctx_struct);
+    pub fn fq_poly_make_monic(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_reverse(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_deflation(
+        input: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ulong;
+    pub fn fq_poly_deflate(
+        result: *mut fq_poly_struct,
+        input: *const fq_poly_struct,
+        deflation: ulong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_inflate(
+        result: *mut fq_poly_struct,
+        input: *const fq_poly_struct,
+        inflation: ulong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_get_coeff(
+        x: *mut fmpz_poly_struct,
+        poly: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_coeff(
+        poly: *mut fq_poly_struct,
+        n: slong,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_set_coeff_fmpz(
+        poly: *mut fq_poly_struct,
+        n: slong,
+        x: *const fmpz,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_is_gen(
+        poly: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_equal(
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_equal_trunc(
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_is_zero(
+        poly: *const fq_poly_struct,
+        UNUSED_ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_is_one(
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_is_unit(
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_equal_fq(
+        poly: *const fq_poly_struct,
+        c: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_add(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_add_si(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        c: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_add_series(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sub(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sub_series(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_neg(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_scalar_mul_fq(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_scalar_div_fq(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_scalar_addmul_fq(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_scalar_submul_fq(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        x: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mul_classical(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mul_reorder(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mul_univariate(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mul_KS(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mul(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mullow_classical(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mullow_KS(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mullow_univariate(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mullow(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mulhigh_classical(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        start: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mulhigh(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        start: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mulmod(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        f: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_mulmod_preinv(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        f: *const fq_poly_struct,
+        finv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sqr_classical(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sqr_reorder(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sqr_KS(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_sqr(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_pow(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        e: ulong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_pow_trunc_binexp(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_pow_trunc(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_fmpz_binexp(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: *const fmpz,
+        f: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_fmpz_binexp_preinv(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: *const fmpz,
+        f: *const fq_poly_struct,
+        finv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_ui_binexp(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: ulong,
+        f: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_ui_binexp_preinv(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: ulong,
+        f: *const fq_poly_struct,
+        finv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_fmpz_sliding_preinv(
+        res: *mut fq_poly_struct,
+        poly: *const fq_poly_struct,
+        e: *const fmpz,
+        k: ulong,
+        f: *const fq_poly_struct,
+        finv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_powmod_x_fmpz_preinv(
+        res: *mut fq_poly_struct,
+        e: *const fmpz,
+        f: *const fq_poly_struct,
+        finv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_shift_left(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_shift_right(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_hamming_weight(
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> slong;
+    pub fn fq_poly_gcd_euclidean(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_gcd(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_gcd_euclidean_f(
+        f: *mut fmpz_poly_struct,
+        G: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_xgcd_euclidean_f(
+        f: *mut fmpz_poly_struct,
+        G: *mut fq_poly_struct,
+        S: *mut fq_poly_struct,
+        fq: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_xgcd(
+        G: *mut fq_poly_struct,
+        S: *mut fq_poly_struct,
+        fq: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_remove(
+        f: *mut fq_poly_struct,
+        g: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ulong;
+    pub fn fq_poly_div(
+        Q: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_div_basecase(
+        Q: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_divrem(
+        Q: *mut fq_poly_struct,
+        R: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_rem(
+        R: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_inv_series_newton(
+        Qinv: *mut fq_poly_struct,
+        Q: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_inv_series(
+        Qinv: *mut fq_poly_struct,
+        Q: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_div_series(
+        Q: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_div_newton_n_preinv(
+        Q: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        Binv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_divrem_newton_n_preinv(
+        Q: *mut fq_poly_struct,
+        R: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        Binv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_divrem_f(
+        f: *mut fmpz_poly_struct,
+        Q: *mut fq_poly_struct,
+        R: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_divides(
+        Q: *mut fq_poly_struct,
+        A: *const fq_poly_struct,
+        B: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_derivative(
+        rop: *mut fq_poly_struct,
+        op: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_invsqrt_series(
+        g: *mut fq_poly_struct,
+        h: *const fq_poly_struct,
+        n: slong,
+        ctx: *mut fq_ctx_struct,
+    );
+    pub fn fq_poly_sqrt_series(
+        g: *mut fq_poly_struct,
+        h: *const fq_poly_struct,
+        n: slong,
+        ctx: *mut fq_ctx_struct,
+    );
+    pub fn fq_poly_sqrt(
+        b: *mut fq_poly_struct,
+        a: *const fq_poly_struct,
+        ctx: *mut fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_evaluate_fq(
+        res: *mut fmpz_poly_struct,
+        f: *const fq_poly_struct,
+        a: *const fmpz_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_evaluate_fq_vec(
+        ys: *mut fq_struct,
+        poly: *const fq_poly_struct,
+        xs: *const fq_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_evaluate_fq_vec_fast(
+        ys: *mut fq_struct,
+        poly: *const fq_poly_struct,
+        xs: *const fq_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_evaluate_fq_vec_iter(
+        ys: *mut fq_struct,
+        poly: *const fq_poly_struct,
+        xs: *const fq_struct,
+        n: slong,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose(
+        rop: *mut fq_poly_struct,
+        op1: *const fq_poly_struct,
+        op2: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_preinv(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        poly3inv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_horner(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_horner_preinv(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        poly3inv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_brent_kung(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_brent_kung_preinv(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly3: *const fq_poly_struct,
+        poly3inv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_precompute_matrix(
+        A: *mut fq_mat_struct,
+        poly1: *const fq_poly_struct,
+        poly2: *const fq_poly_struct,
+        poly2inv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_compose_mod_brent_kung_precomp_preinv(
+        res: *mut fq_poly_struct,
+        poly1: *const fq_poly_struct,
+        A: *const fq_mat_struct,
+        poly3: *const fq_poly_struct,
+        poly3inv: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    );
+    pub fn fq_poly_fprint_pretty(
+        file: *mut FILE,
+        poly: *const fq_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_fprint(
+        file: *mut FILE,
+        poly: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_print(
+        poly: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_print_pretty(
+        poly: *const fq_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_poly_get_str_pretty(
+        poly: *const fq_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+    pub fn fq_poly_get_str(
+        poly: *const fq_poly_struct,
+        ctx: *const fq_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+}
 
 
 /* fq_poly_factor.h */
@@ -41005,6 +43063,355 @@ unsafe extern "C" {
         c: slong,
         ctx: *const fq_zech_ctx_struct,
     ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_init(
+        mat: *mut fq_zech_mat_struct,
+        rows: slong,
+        cols: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_init_set(
+        mat: *mut fq_zech_mat_struct,
+        src: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_nrows(
+        mat: *const fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_ncols(
+        mat: *const fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_entry(
+        mat: *const fq_zech_mat_struct,
+        i: slong,
+        j: slong,
+    ) -> *mut fq_zech_struct;
+    pub fn fq_zech_mat_entry_set(
+        mat: *mut fq_zech_mat_struct,
+        i: slong,
+        j: slong,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_swap(
+        mat1: *mut fq_zech_mat_struct,
+        mat2: *mut fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_swap_entrywise(
+        mat1: *mut fq_zech_mat_struct,
+        mat2: *mut fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_set(
+        mat1: *mut fq_zech_mat_struct,
+        mat2: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_clear(
+        mat: *mut fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_equal(
+        mat1: *const fq_zech_mat_struct,
+        mat2: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_is_zero(
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_is_one(
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_is_empty(
+        mat: *const fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_is_square(
+        mat: *const fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_swap_rows(
+        mat: *mut fq_zech_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_invert_rows(
+        mat: *mut fq_zech_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_swap_cols(
+        mat: *mut fq_zech_mat_struct,
+        perm: *mut slong,
+        r: slong,
+        s: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_invert_cols(
+        mat: *mut fq_zech_mat_struct,
+        perm: *mut slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_zero(A: *mut fq_zech_mat_struct, ctx: *const fq_zech_ctx_struct);
+    pub fn fq_zech_mat_one(A: *mut fq_zech_mat_struct, ctx: *const fq_zech_ctx_struct);
+    pub fn fq_zech_mat_set_nmod_mat(
+        mat1: *mut fq_zech_mat_struct,
+        mat2: *const nmod_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_set_fmpz_mod_mat(
+        mat1: *mut fq_zech_mat_struct,
+        mat2: *const fmpz_mod_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_window_init(
+        window: *mut fq_zech_mat_struct,
+        mat: *const fq_zech_mat_struct,
+        r1: slong,
+        c1: slong,
+        r2: slong,
+        c2: slong,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_window_clear(
+        UNUSED_window: *mut fq_zech_mat_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_concat_horizontal(
+        res: *mut fq_zech_mat_struct,
+        mat1: *const fq_zech_mat_struct,
+        mat2: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_concat_vertical(
+        res: *mut fq_zech_mat_struct,
+        mat1: *const fq_zech_mat_struct,
+        mat2: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_fprint(
+        file: *mut FILE,
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_fprint_pretty(
+        file: *mut FILE,
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_print(
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_print_pretty(
+        mat: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_randtest(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_randrank(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        rank: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_randpermdiag(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        diag: *mut fq_zech_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_randops(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        count: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_randtril(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_randtriu(
+        mat: *mut fq_zech_mat_struct,
+        state: *mut flint_rand_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_transpose(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_add(
+        C: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_sub(
+        C: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_neg(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_submul(
+        D: *mut fq_zech_mat_struct,
+        C: *const fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_scalar_mul(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        c: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_scalar_mul_fmpz(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        c: *const fmpz,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_scalar_mul_si(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        c: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_scalar_mul_ui(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        c: ulong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_mul(
+        C: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_mul_classical(
+        C: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_mul_KS(
+        C: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_lu(
+        P: *mut slong,
+        A: *mut fq_zech_mat_struct,
+        rank_check: ::std::os::raw::c_int,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_inv(
+        B: *mut fq_zech_mat_struct,
+        A: *mut fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_rref(
+        B: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_reduce_row(
+        A: *mut fq_zech_mat_struct,
+        P: *mut slong,
+        L: *mut slong,
+        m: slong,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_nullspace(
+        X: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_rank(
+        A: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_mat_solve_tril(
+        X: *mut fq_zech_mat_struct,
+        L: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_solve_triu(
+        X: *mut fq_zech_mat_struct,
+        U: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        unit: ::std::os::raw::c_int,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_mul_vec(
+        c: *mut fq_zech_struct,
+        A: *const fq_zech_mat_struct,
+        b: *const fq_zech_struct,
+        blen: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_mul_vec_ptr(
+        c: *const *mut fq_zech_struct,
+        A: *const fq_zech_mat_struct,
+        b: *const *const fq_zech_struct,
+        blen: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_vec_mul(
+        c: *mut fq_zech_struct,
+        a: *const fq_zech_struct,
+        alen: slong,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_vec_mul_ptr(
+        c: *const *mut fq_zech_struct,
+        a: *const *const fq_zech_struct,
+        alen: slong,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_mat_solve(
+        X: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        C: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_can_solve(
+        X: *mut fq_zech_mat_struct,
+        A: *const fq_zech_mat_struct,
+        B: *const fq_zech_mat_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_mat_similarity(
+        A: *mut fq_zech_mat_struct,
+        r: slong,
+        d: *mut fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
 }
 
 
@@ -42778,6 +45185,697 @@ unsafe extern "C" {
 
 /* fq_zech_poly.h */
 
+unsafe extern "C" {
+    pub fn fq_zech_poly_init(
+        poly: *mut fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_init2(
+        poly: *mut fq_zech_poly_struct,
+        alloc: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_realloc(
+        poly: *mut fq_zech_poly_struct,
+        alloc: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_truncate(
+        poly: *mut fq_zech_poly_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_trunc(
+        poly1: *mut fq_zech_poly_struct,
+        poly2: *mut fq_zech_poly_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_fit_length(
+        poly: *mut fq_zech_poly_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_clear(
+        poly: *mut fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_length(
+        poly: *const fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_poly_degree(
+        poly: *const fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_poly_lead(
+        poly: *const fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> *mut fq_zech_struct;
+    pub fn fq_zech_poly_randtest(
+        f: *mut fq_zech_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_randtest_not_zero(
+        f: *mut fq_zech_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_randtest_monic(
+        f: *mut fq_zech_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_randtest_irreducible(
+        f: *mut fq_zech_poly_struct,
+        state: *mut flint_rand_struct,
+        len: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_fq_zech(
+        poly: *mut fq_zech_poly_struct,
+        c: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_fmpz_mod_poly(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fmpz_mod_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_nmod_poly(
+        rop: *mut fq_zech_poly_struct,
+        op: *const nmod_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_swap(
+        op1: *mut fq_zech_poly_struct,
+        op2: *mut fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_zero(
+        poly: *mut fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_one(
+        poly: *mut fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_gen(f: *mut fq_zech_poly_struct, ctx: *const fq_zech_ctx_struct);
+    pub fn fq_zech_poly_make_monic(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_reverse(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_deflation(
+        input: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ulong;
+    pub fn fq_zech_poly_deflate(
+        result: *mut fq_zech_poly_struct,
+        input: *const fq_zech_poly_struct,
+        deflation: ulong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_inflate(
+        result: *mut fq_zech_poly_struct,
+        input: *const fq_zech_poly_struct,
+        inflation: ulong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_get_coeff(
+        x: *mut fq_zech_struct,
+        poly: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_coeff(
+        poly: *mut fq_zech_poly_struct,
+        n: slong,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_set_coeff_fmpz(
+        poly: *mut fq_zech_poly_struct,
+        n: slong,
+        x: *const fmpz,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_is_gen(
+        poly: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_equal(
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_equal_trunc(
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_is_zero(
+        poly: *const fq_zech_poly_struct,
+        UNUSED_ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_is_one(
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_is_unit(
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_equal_fq_zech(
+        poly: *const fq_zech_poly_struct,
+        c: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_add(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_add_si(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        c: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_add_series(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sub(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sub_series(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_neg(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_scalar_mul_fq_zech(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_scalar_div_fq_zech(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_scalar_addmul_fq_zech(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_scalar_submul_fq_zech(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        x: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mul_classical(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mul_reorder(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mul_univariate(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mul_KS(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mul(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mullow_classical(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mullow_KS(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mullow_univariate(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mullow(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mulhigh_classical(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        start: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mulhigh(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        start: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mulmod(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        f: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_mulmod_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        f: *const fq_zech_poly_struct,
+        finv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqr_classical(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqr_reorder(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqr_KS(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqr(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_pow(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        e: ulong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_pow_trunc_binexp(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_pow_trunc(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: ulong,
+        trunc: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_fmpz_binexp(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: *const fmpz,
+        f: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_fmpz_binexp_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: *const fmpz,
+        f: *const fq_zech_poly_struct,
+        finv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_ui_binexp(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: ulong,
+        f: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_ui_binexp_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: ulong,
+        f: *const fq_zech_poly_struct,
+        finv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_fmpz_sliding_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly: *const fq_zech_poly_struct,
+        e: *const fmpz,
+        k: ulong,
+        f: *const fq_zech_poly_struct,
+        finv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_powmod_x_fmpz_preinv(
+        res: *mut fq_zech_poly_struct,
+        e: *const fmpz,
+        f: *const fq_zech_poly_struct,
+        finv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_shift_left(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_shift_right(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_hamming_weight(
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> slong;
+    pub fn fq_zech_poly_gcd_euclidean(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_gcd(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_gcd_euclidean_f(
+        f: *mut fq_zech_struct,
+        G: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_xgcd_euclidean_f(
+        f: *mut fq_zech_struct,
+        G: *mut fq_zech_poly_struct,
+        S: *mut fq_zech_poly_struct,
+        fq_zech: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_xgcd(
+        G: *mut fq_zech_poly_struct,
+        S: *mut fq_zech_poly_struct,
+        fq_zech: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_remove(
+        f: *mut fq_zech_poly_struct,
+        g: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ulong;
+    pub fn fq_zech_poly_div(
+        Q: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_div_basecase(
+        Q: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_divrem(
+        Q: *mut fq_zech_poly_struct,
+        R: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_rem(
+        R: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_inv_series_newton(
+        Qinv: *mut fq_zech_poly_struct,
+        Q: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_inv_series(
+        Qinv: *mut fq_zech_poly_struct,
+        Q: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_div_series(
+        Q: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_div_newton_n_preinv(
+        Q: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        Binv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_divrem_newton_n_preinv(
+        Q: *mut fq_zech_poly_struct,
+        R: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        Binv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_divrem_f(
+        f: *mut fq_zech_struct,
+        Q: *mut fq_zech_poly_struct,
+        R: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_divides(
+        Q: *mut fq_zech_poly_struct,
+        A: *const fq_zech_poly_struct,
+        B: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_derivative(
+        rop: *mut fq_zech_poly_struct,
+        op: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_invsqrt_series(
+        g: *mut fq_zech_poly_struct,
+        h: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *mut fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqrt_series(
+        g: *mut fq_zech_poly_struct,
+        h: *const fq_zech_poly_struct,
+        n: slong,
+        ctx: *mut fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_sqrt(
+        b: *mut fq_zech_poly_struct,
+        a: *const fq_zech_poly_struct,
+        ctx: *mut fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_evaluate_fq_zech(
+        res: *mut fq_zech_struct,
+        f: *const fq_zech_poly_struct,
+        a: *const fq_zech_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_evaluate_fq_zech_vec(
+        ys: *mut fq_zech_struct,
+        poly: *const fq_zech_poly_struct,
+        xs: *const fq_zech_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_evaluate_fq_zech_vec_fast(
+        ys: *mut fq_zech_struct,
+        poly: *const fq_zech_poly_struct,
+        xs: *const fq_zech_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_evaluate_fq_zech_vec_iter(
+        ys: *mut fq_zech_struct,
+        poly: *const fq_zech_poly_struct,
+        xs: *const fq_zech_struct,
+        n: slong,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose(
+        rop: *mut fq_zech_poly_struct,
+        op1: *const fq_zech_poly_struct,
+        op2: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        poly3inv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_horner(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_horner_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        poly3inv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_brent_kung(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_brent_kung_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly3: *const fq_zech_poly_struct,
+        poly3inv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_precompute_matrix(
+        A: *mut fq_zech_mat_struct,
+        poly1: *const fq_zech_poly_struct,
+        poly2: *const fq_zech_poly_struct,
+        poly2inv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_compose_mod_brent_kung_precomp_preinv(
+        res: *mut fq_zech_poly_struct,
+        poly1: *const fq_zech_poly_struct,
+        A: *const fq_zech_mat_struct,
+        poly3: *const fq_zech_poly_struct,
+        poly3inv: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    );
+    pub fn fq_zech_poly_fprint_pretty(
+        file: *mut FILE,
+        poly: *const fq_zech_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_fprint(
+        file: *mut FILE,
+        poly: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_print(
+        poly: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_print_pretty(
+        poly: *const fq_zech_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> ::std::os::raw::c_int;
+    pub fn fq_zech_poly_get_str_pretty(
+        poly: *const fq_zech_poly_struct,
+        x: *const ::std::os::raw::c_char,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+    pub fn fq_zech_poly_get_str(
+        poly: *const fq_zech_poly_struct,
+        ctx: *const fq_zech_ctx_struct,
+    ) -> *mut ::std::os::raw::c_char;
+}
 
 
 /* fq_zech_poly_factor.h */

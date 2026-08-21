@@ -244,6 +244,34 @@ impl BindingGeneration {
                                 .layout_tests(false)
                                 .formatter(bindgen::Formatter::Prettyplease);
 
+                            // FLINT instantiates the fq matrix and polynomial
+                            // APIs from `fq_{mat,poly}_templates.h`. Clang
+                            // attributes those declarations to the included
+                            // template file rather than to the public
+                            // `fq*_mat.h` / `fq*_poly.h` entry point, so the
+                            // per-header file allowlist above would otherwise
+                            // discard the complete instantiated API.
+                            if matches!(
+                                header_name,
+                                "fq_mat.h"
+                                    | "fq_nmod_mat.h"
+                                    | "fq_zech_mat.h"
+                                    | "fq_poly.h"
+                                    | "fq_nmod_poly.h"
+                                    | "fq_zech_poly.h"
+                            ) {
+                                let stem = header_name
+                                    .strip_suffix(".h")
+                                    .context("FLINT header has no .h suffix")?;
+                                builder = builder
+                                    .allowlist_function(format!("^{stem}_.*"))
+                                    // The referenced public types are emitted
+                                    // from their own headers. Avoid moving
+                                    // those declarations into this header's
+                                    // output as an incidental bindgen effect.
+                                    .allowlist_recursively(false);
+                            }
+
                             for inline_macro in inline_macros {
                                 builder = builder.clang_arg(format!("-D{inline_macro}"));
                             }
