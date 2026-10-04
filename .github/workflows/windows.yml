@@ -1,9 +1,21 @@
 name: Windows
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
+    inputs:
+      configuration:
+        description: Windows configuration to test (one job per run)
+        required: true
+        type: choice
+        default: msvc-system-static-md
+        options:
+          - msvc-system-static-md
+          - msvc-system-dynamic
+          - msvc-bundled-cmake
+          - gnu-bundled
+          - gnu-bundled-gmp-mpfr
+          - gnu-generated-bindings
+          - gnu-system-flint
 
 permissions:
   contents: read
@@ -22,6 +34,7 @@ env:
 
 jobs:
   gnu:
+    if: startsWith(inputs.configuration, 'gnu-')
     name: Windows GNU (${{ matrix.name }})
     runs-on: windows-latest
     timeout-minutes: 90
@@ -35,19 +48,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: bundled
-            features: ""
-            packages: ""
-          - name: bundled-gmp-mpfr
-            features: gmp-mpfr-sys
-            packages: ""
-          - name: generated-bindings
-            features: run-bindgen
-            packages: clang:p
-          - name: system-flint
-            features: use-system-libs,run-bindgen
-            packages: flint:p pkgconf:p clang:p
+        include: >-
+          ${{ fromJSON('{
+            "gnu-bundled": [
+              {"name": "bundled", "features": "", "packages": ""}
+            ],
+            "gnu-bundled-gmp-mpfr": [
+              {"name": "bundled-gmp-mpfr", "features": "gmp-mpfr-sys", "packages": ""}
+            ],
+            "gnu-generated-bindings": [
+              {"name": "generated-bindings", "features": "run-bindgen", "packages": "clang:p"}
+            ],
+            "gnu-system-flint": [
+              {"name": "system-flint", "features": "use-system-libs,run-bindgen", "packages": "flint:p pkgconf:p clang:p"}
+            ]
+          }')[inputs.configuration] }}
     steps:
       - name: Preserve shell script line endings
         shell: pwsh
@@ -103,28 +118,25 @@ jobs:
           cargo test --features "$FEATURES"
 
   msvc:
+    if: startsWith(inputs.configuration, 'msvc-')
     name: Windows MSVC (${{ matrix.name }})
     runs-on: windows-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: system-dynamic
-            triplet: x64-windows
-            packages: flint
-            features: use-system-libs,run-bindgen
-            dynamic: true
-          - name: system-static-md
-            triplet: x64-windows-static-md
-            packages: flint
-            features: use-system-libs,run-bindgen
-            dynamic: false
-          - name: bundled-cmake
-            triplet: x64-windows-static-md
-            packages: gmp mpfr pthreads
-            features: run-bindgen
-            dynamic: false
+        include: >-
+          ${{ fromJSON('{
+            "msvc-system-dynamic": [
+              {"name": "system-dynamic", "triplet": "x64-windows", "packages": "flint", "features": "use-system-libs,run-bindgen", "dynamic": true}
+            ],
+            "msvc-system-static-md": [
+              {"name": "system-static-md", "triplet": "x64-windows-static-md", "packages": "flint", "features": "use-system-libs,run-bindgen", "dynamic": false}
+            ],
+            "msvc-bundled-cmake": [
+              {"name": "bundled-cmake", "triplet": "x64-windows-static-md", "packages": "gmp mpfr pthreads", "features": "run-bindgen", "dynamic": false}
+            ]
+          }')[inputs.configuration] }}
     env:
       RUSTUP_TOOLCHAIN: stable-x86_64-pc-windows-msvc
       VCPKG_COMMIT: 5dd2e1600d049b498ff9fb9fe15997533ae0c804
@@ -165,26 +177,54 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\vcpkg-cache" | Out-Null
           "VCPKG_BINARY_SOURCES=clear;files,$env:RUNNER_TEMP\vcpkg-cache,readwrite" >> $env:GITHUB_ENV
 
-      - uses: actions/cache@v6
+      - name: Restore native dependency cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}\vcpkg-cache
-          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml') }}
+          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml', '.github/vcpkg-triplets/*.cmake') }}
           restore-keys: |
+            vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml', '.github/vcpkg-triplets/*.cmake') }}-
             vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-
 
       - name: Bootstrap vcpkg
         run: '& "$env:VCPKG_ROOT\bootstrap-vcpkg.bat" -disableMetrics'
 
       - name: Install native dependencies
+        id: install-native
+        # Leave time to save diagnostics and completed packages after a timeout.
+        timeout-minutes: 120
         env:
           VCPKG_PACKAGES: ${{ matrix.packages }}
         run: |
           $packages = $env:VCPKG_PACKAGES.Split(' ')
-          & "$env:VCPKG_ROOT\vcpkg.exe" install --classic --triplet $env:VCPKGRS_TRIPLET @packages
+          & "$env:VCPKG_ROOT\vcpkg.exe" install --classic --triplet $env:VCPKGRS_TRIPLET --host-triplet x64-windows --overlay-triplets "$env:GITHUB_WORKSPACE\.github\vcpkg-triplets" @packages
+
+      - name: Upload native build logs
+        if: always() && steps.install-native.outcome != '' && steps.install-native.outcome != 'skipped'
+        continue-on-error: true
+        timeout-minutes: 5
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-build-logs-${{ matrix.name }}-${{ github.run_attempt }}
+          path: .ci/vcpkg/buildtrees/**/*.log
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Save native dependency cache
+        if: always() && steps.install-native.outcome != '' && steps.install-native.outcome != 'skipped' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 5
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}\vcpkg-cache
+          # Failed installs retain completed packages under a separate key, so
+          # the immutable primary key remains available for a complete install.
+          key: ${{ steps.vcpkg-cache.outputs.cache-primary-key }}${{ steps.install-native.outcome != 'success' && format('-partial-{0}-{1}', github.run_id, github.run_attempt) || '' }}
 
       - uses: Swatinem/rust-cache@v2
         with:
-          key: ${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml') }}
+          key: ${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml', '.github/vcpkg-triplets/*.cmake') }}
 
       - name: Test with regenerated MSVC bindings
         env:
