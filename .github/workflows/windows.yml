@@ -103,15 +103,34 @@ jobs:
           cargo test --features "$FEATURES"
 
   msvc:
-    name: Windows MSVC (vcpkg FLINT)
+    name: Windows MSVC (${{ matrix.name }})
     runs-on: windows-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: system-dynamic
+            triplet: x64-windows
+            packages: flint
+            features: use-system-libs,run-bindgen
+            dynamic: true
+          - name: system-static-md
+            triplet: x64-windows-static-md
+            packages: flint
+            features: use-system-libs,run-bindgen
+            dynamic: false
+          - name: bundled-cmake
+            triplet: x64-windows-static-md
+            packages: gmp mpfr pthreads
+            features: run-bindgen
+            dynamic: false
     env:
       RUSTUP_TOOLCHAIN: stable-x86_64-pc-windows-msvc
       VCPKG_COMMIT: 5dd2e1600d049b498ff9fb9fe15997533ae0c804
-      VCPKGRS_DYNAMIC: "1"
-      VCPKGRS_TRIPLET: x64-windows
+      VCPKGRS_TRIPLET: ${{ matrix.triplet }}
       LIBCLANG_PATH: C:\Program Files\LLVM\bin
+      CMAKE_GENERATOR: Ninja
     steps:
       - uses: actions/checkout@v7
         with:
@@ -133,6 +152,11 @@ jobs:
       - name: Install Rust
         run: rustup toolchain install $env:RUSTUP_TOOLCHAIN --profile minimal --no-self-update
 
+      - uses: actions/setup-python@v7
+        if: matrix.name == 'bundled-cmake'
+        with:
+          python-version: "3.13"
+
       - name: Prepare native dependencies
         id: native
         run: |
@@ -144,24 +168,36 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ${{ runner.temp }}\vcpkg-cache
-          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}
+          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml') }}
           restore-keys: |
-            vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-
+            vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-
 
       - name: Bootstrap vcpkg
         run: '& "$env:VCPKG_ROOT\bootstrap-vcpkg.bat" -disableMetrics'
 
-      - name: Install FLINT and its dependencies
-        run: '& "$env:VCPKG_ROOT\vcpkg.exe" install "flint:$env:VCPKGRS_TRIPLET"'
+      - name: Install native dependencies
+        env:
+          VCPKG_PACKAGES: ${{ matrix.packages }}
+        run: |
+          $packages = $env:VCPKG_PACKAGES.Split(' ')
+          & "$env:VCPKG_ROOT\vcpkg.exe" install --classic --triplet $env:VCPKGRS_TRIPLET @packages
 
       - uses: Swatinem/rust-cache@v2
         with:
-          key: ${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}
+          key: ${{ matrix.name }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}-${{ hashFiles('.github/workflows/windows.yml') }}
 
       - name: Test with regenerated MSVC bindings
+        env:
+          FEATURES: ${{ matrix.features }}
+          DYNAMIC_LINKAGE: ${{ matrix.dynamic }}
         run: |
           if (!(Test-Path "$env:LIBCLANG_PATH\libclang.dll")) {
             throw "The runner's LLVM installation does not contain libclang.dll"
           }
-          $env:PATH = "$env:VCPKG_ROOT\installed\$env:VCPKGRS_TRIPLET\bin;$env:PATH"
-          cargo test --features use-system-libs,run-bindgen
+          if ($env:DYNAMIC_LINKAGE -eq 'true') {
+            $env:VCPKGRS_DYNAMIC = "1"
+            $env:PATH = "$env:VCPKG_ROOT\installed\$env:VCPKGRS_TRIPLET\bin;$env:PATH"
+          } else {
+            Remove-Item Env:VCPKGRS_DYNAMIC -ErrorAction SilentlyContinue
+          }
+          cargo test --features $env:FEATURES

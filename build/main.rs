@@ -5,11 +5,16 @@ use std::{
 
 use anyhow::{Context, Result};
 
+mod source;
+
 #[cfg(feature = "run-bindgen")]
 mod runbindgen;
 
 #[cfg(feature = "use-system-libs")]
 mod system;
+
+#[cfg(target_env = "msvc")]
+mod msvc;
 
 const CONFIGURE_ENV: &[&str] = &["CC", "AR", "CFLAGS", "CPPFLAGS", "LDFLAGS"];
 
@@ -145,25 +150,6 @@ fn shell_path(path: &Path) -> Result<String> {
     }
 }
 
-fn copy_source(source: &Path, destination: &Path) -> Result<()> {
-    std::fs::create_dir_all(destination)?;
-    for entry in std::fs::read_dir(source)? {
-        let entry = entry?;
-        if entry.file_name() == ".git" {
-            continue;
-        }
-        let target = destination.join(entry.file_name());
-        if entry.file_type()?.is_dir() {
-            copy_source(&entry.path(), &target)?;
-        } else if std::fs::read(&target).ok().as_deref()
-            != Some(std::fs::read(entry.path())?.as_slice())
-        {
-            std::fs::copy(entry.path(), target)?;
-        }
-    }
-    Ok(())
-}
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Target {
     Other,
@@ -173,8 +159,8 @@ pub(crate) enum Target {
 
 impl Target {
     fn from_env() -> Result<Self> {
-        let target = std::env::var("TARGET").context("Missing TARGET")?;
-        let target = match target.as_str() {
+        let target_triple = std::env::var("TARGET").context("Missing TARGET")?;
+        let target = match target_triple.as_str() {
             "x86_64-pc-windows-gnu" => Self::WindowsGnu,
             "x86_64-pc-windows-msvc" => Self::WindowsMsvc,
             _ => Self::Other,
@@ -189,12 +175,16 @@ impl Target {
                 cfg!(windows),
                 "Cross-compiling FLINT to Windows is not supported; build on Windows"
             );
+            anyhow::ensure!(
+                std::env::var("HOST").context("Missing HOST")? == target_triple,
+                "Windows builds require matching Rust host and target toolchains"
+            );
         }
         if target == Self::WindowsMsvc {
             anyhow::ensure!(
-                cfg!(feature = "use-system-libs") && cfg!(feature = "run-bindgen"),
-                "MSVC requires `--features use-system-libs,run-bindgen` and vcpkg's \
-                 flint:x64-windows package; see the Windows instructions in README.md"
+                cfg!(feature = "run-bindgen"),
+                "MSVC requires `--features run-bindgen` and vcpkg dependencies; \
+                 add `use-system-libs` to use vcpkg's FLINT; see README.md"
             );
             anyhow::ensure!(
                 !cfg!(feature = "gmp-mpfr-sys"),
@@ -205,23 +195,47 @@ impl Target {
     }
 }
 
-// Paths selected once at startup and shared by the build and binding phases.
+// Shared by source builds, system discovery, and binding generation.
+struct FlintInstallation {
+    // Prefix containing flint/flint.h.
+    include_dir: PathBuf,
+    lib_dir: Option<PathBuf>,
+    // External headers needed when bundled FLINT has a separate install prefix.
+    #[cfg_attr(not(feature = "run-bindgen"), allow(dead_code))]
+    dependency_include_dirs: Vec<PathBuf>,
+}
+
+impl FlintInstallation {
+    #[cfg(any(not(feature = "use-system-libs"), target_env = "msvc"))]
+    fn from_prefix(prefix: &Path) -> Self {
+        Self {
+            include_dir: prefix.join("include"),
+            lib_dir: Some(prefix.join("lib")),
+            dependency_include_dirs: Vec::new(),
+        }
+    }
+
+    fn emit_metadata(&self) {
+        if let Some(lib_dir) = &self.lib_dir {
+            println!("cargo::metadata=LIB_DIR={}", lib_dir.display());
+        }
+        println!("cargo::metadata=INCLUDE_DIR={}", self.include_dir.display());
+    }
+}
+
 struct Build {
     // Cargo build-script scratch directory.
     out_dir: PathBuf,
     // Bindings included by src/lib.rs from OUT_DIR.
     flint_rs: PathBuf,
-    // FLINT include prefix, either OUT_DIR/include or a system include path.
-    flint_include_dir: PathBuf,
-    // FLINT library prefix. System builds use pkg-config or vcpkg.
-    flint_lib_dir: Option<PathBuf>,
-    link: LinkMode,
+    flint: FlintInstallation,
+    source: FlintSource,
     target: Target,
 }
 
-enum LinkMode {
-    BundledStatic,
-    SystemDynamic,
+enum FlintSource {
+    Bundled,
+    System,
 }
 
 impl Build {
@@ -232,38 +246,38 @@ impl Build {
         let out_dir = PathBuf::from(std::env::var("OUT_DIR").context("Missing OUT_DIR")?);
 
         #[cfg(feature = "use-system-libs")]
-        let (flint_include_dir, flint_lib_dir) = {
-            let library = system::find(target)?;
-            (library.include_dir, library.lib_dir)
-        };
+        let flint = system::find(target)?;
         #[cfg(not(feature = "use-system-libs"))]
-        let (flint_include_dir, flint_lib_dir) =
-            (out_dir.join("include"), Some(out_dir.join("lib")));
+        let flint = FlintInstallation::from_prefix(&out_dir);
 
         Ok(Build {
             out_dir: out_dir.clone(),
             flint_rs: out_dir.join("flint.rs"),
-            flint_include_dir,
-            flint_lib_dir,
-            link: if cfg!(feature = "use-system-libs") {
-                LinkMode::SystemDynamic
+            flint,
+            source: if cfg!(feature = "use-system-libs") {
+                FlintSource::System
             } else {
-                LinkMode::BundledStatic
+                FlintSource::Bundled
             },
             target,
         })
     }
 
-    fn build_flint(&self) -> Result<()> {
-        if matches!(self.link, LinkMode::BundledStatic) {
+    fn build_flint(&mut self) -> Result<()> {
+        if matches!(self.source, FlintSource::Bundled) {
             self.build_bundled_flint()?;
         }
-        self.emit_flint_metadata();
+        self.flint.emit_metadata();
         Ok(())
     }
 
-    fn build_bundled_flint(&self) -> Result<()> {
-        let flint_root_dir = self.out_dir.join("flint");
+    fn build_bundled_flint(&mut self) -> Result<()> {
+        #[cfg(target_env = "msvc")]
+        if self.target == Target::WindowsMsvc {
+            self.flint = msvc::build_bundled(&self.out_dir)?;
+            return Ok(());
+        }
+
         let tmp_dir = self.out_dir.join("tmp");
         std::fs::create_dir_all(&tmp_dir)
             .context(format!("Failed to create `{}`", tmp_dir.display()))?;
@@ -272,9 +286,8 @@ impl Build {
             Path::new("flint/src/flint.h.in").is_file(),
             "FLINT sources are missing; run `git submodule update --init --recursive`"
         );
-        // Copy with Rust so native Windows paths never reach POSIX `cp`.
-        // Leave unchanged files alone to preserve incremental make builds.
-        copy_source(Path::new("flint"), &flint_root_dir)?;
+        let flint_root_dir = source::prepare(Path::new("flint"), &self.out_dir)
+            .context("Failed to prepare the FLINT source build tree")?;
         let tmp_dir = shell_path(&tmp_dir)?;
         let prefix = shell_path(&self.out_dir)?;
         anyhow::ensure!(
@@ -327,20 +340,15 @@ impl Build {
         Ok(())
     }
 
-    fn emit_flint_metadata(&self) {
-        if let Some(flint_lib_dir) = &self.flint_lib_dir {
-            println!("cargo::metadata=LIB_DIR={}", flint_lib_dir.display());
-        }
-        println!(
-            "cargo::metadata=INCLUDE_DIR={}",
-            self.flint_include_dir.display()
-        );
-    }
-
     fn emit_link_flags(&self) -> Result<()> {
-        if matches!(self.link, LinkMode::BundledStatic) {
+        // The MSVC module emits FLINT and its vcpkg dependencies together.
+        if self.target == Target::WindowsMsvc {
+            return Ok(());
+        }
+        if matches!(self.source, FlintSource::Bundled) {
             let flint_lib_dir = self
-                .flint_lib_dir
+                .flint
+                .lib_dir
                 .as_ref()
                 .context("Missing bundled FLINT library directory")?;
             anyhow::ensure!(
@@ -368,7 +376,7 @@ impl Build {
     }
 
     fn link_mingw_dependencies(&self) -> Result<()> {
-        if self.target != Target::WindowsGnu || matches!(self.link, LinkMode::SystemDynamic) {
+        if self.target != Target::WindowsGnu || matches!(self.source, FlintSource::System) {
             return Ok(());
         }
         // Rust's bundled MinGW linker does not necessarily search the MSYS2
@@ -402,11 +410,7 @@ impl Build {
 #[cfg(feature = "run-bindgen")]
 impl Build {
     fn prepare_bindings(&self) -> Result<()> {
-        let bgen = runbindgen::BindingGeneration::new(
-            self.flint_include_dir.clone(),
-            self.flint_rs.clone(),
-            self.target,
-        )?;
+        let bgen = runbindgen::BindingGeneration::new(&self.flint, &self.flint_rs, self.target)?;
         bgen.generate_bindings()
     }
 }
@@ -419,12 +423,12 @@ fn main() -> Result<()> {
     }
     #[cfg(windows)]
     println!("cargo::rerun-if-env-changed=ACLOCAL_PATH");
-    let build = Build::new()?;
+    let mut build = Build::new()?;
 
     build.build_flint()?;
 
     anyhow::ensure!(
-        build.flint_include_dir.join("flint/flint.h").is_file(),
+        build.flint.include_dir.join("flint/flint.h").is_file(),
         "Compilation is successful, but `flint/flint.h` is not where it should"
     );
 

@@ -2,33 +2,28 @@ use std::path::PathBuf;
 
 use anyhow::{Context, Result};
 
-use super::Target;
+use super::{FlintInstallation, Target};
 
-pub(super) struct SystemFlint {
-    pub include_dir: PathBuf,
-    pub lib_dir: Option<PathBuf>,
+fn from_paths(
+    provider: &str,
+    include_paths: Vec<PathBuf>,
+    link_paths: Vec<PathBuf>,
+) -> Result<FlintInstallation> {
+    let include_dir = include_paths
+        .iter()
+        .find(|path| path.join("flint/flint.h").is_file())
+        .cloned()
+        .with_context(|| {
+            format!("{provider} did not report an include path containing `flint/flint.h`")
+        })?;
+    Ok(FlintInstallation {
+        include_dir,
+        lib_dir: link_paths.into_iter().next(),
+        dependency_include_dirs: include_paths,
+    })
 }
 
-impl SystemFlint {
-    fn from_paths(
-        provider: &str,
-        include_paths: Vec<PathBuf>,
-        link_paths: Vec<PathBuf>,
-    ) -> Result<Self> {
-        let include_dir = include_paths
-            .into_iter()
-            .find(|path| path.join("flint/flint.h").is_file())
-            .with_context(|| {
-                format!("{provider} did not report an include path containing `flint/flint.h`")
-            })?;
-        Ok(Self {
-            include_dir,
-            lib_dir: link_paths.into_iter().next(),
-        })
-    }
-}
-
-pub(super) fn find(target: Target) -> Result<SystemFlint> {
+pub(super) fn find(target: Target) -> Result<FlintInstallation> {
     let library = match target {
         Target::WindowsMsvc => find_with_vcpkg(),
         _ => find_with_pkg_config(),
@@ -37,7 +32,7 @@ pub(super) fn find(target: Target) -> Result<SystemFlint> {
     Ok(library)
 }
 
-fn find_with_pkg_config() -> Result<SystemFlint> {
+fn find_with_pkg_config() -> Result<FlintInstallation> {
     let library = pkg_config::Config::new()
         .statik(false)
         .probe("flint")
@@ -54,30 +49,18 @@ fn find_with_pkg_config() -> Result<SystemFlint> {
     ] {
         println!("cargo::rerun-if-env-changed={name}");
     }
-    SystemFlint::from_paths("pkg-config", library.include_paths, library.link_paths)
+    from_paths("pkg-config", library.include_paths, library.link_paths)
 }
 
-fn find_with_vcpkg() -> Result<SystemFlint> {
-    for name in [
-        "VCPKG_ROOT",
-        "VCPKGRS_TRIPLET",
-        "VCPKGRS_DYNAMIC",
-        "VCPKGRS_DISABLE",
-        "VCPKGRS_NO_FLINT",
-        "NO_VCPKG",
-        "FLINT_NO_VCPKG",
-    ] {
-        println!("cargo::rerun-if-env-changed={name}");
-    }
-    let library = vcpkg::Config::new().find_package("flint").context(
-        "Failed to find MSVC FLINT; install flint:x64-windows with vcpkg and set \
-         VCPKGRS_TRIPLET=x64-windows and VCPKGRS_DYNAMIC=1",
-    )?;
-    anyhow::ensure!(
-        !library.is_static && library.vcpkg_triplet == "x64-windows",
-        "MSVC currently requires vcpkg's dynamic x64-windows triplet"
-    );
-    SystemFlint::from_paths("vcpkg", library.include_paths, library.link_paths)
+#[cfg(target_env = "msvc")]
+fn find_with_vcpkg() -> Result<FlintInstallation> {
+    let library = super::msvc::probe_system_flint()?;
+    from_paths("vcpkg", library.include_paths, library.link_paths)
+}
+
+#[cfg(not(target_env = "msvc"))]
+fn find_with_vcpkg() -> Result<FlintInstallation> {
+    anyhow::bail!("MSVC builds require a native MSVC host toolchain")
 }
 
 fn validate_system_flint_version(version: &str) -> Result<()> {
