@@ -120,6 +120,26 @@ impl<'a> BindingGeneration<'a> {
         Ok(())
     }
 
+    fn preserve_clang_attributes(&self) -> Result<()> {
+        let header = self.tmp_dir.path().join("flint.h");
+        let source = std::fs::read_to_string(&header)
+            .with_context(|| format!("Failed to read `{}`", header.display()))?;
+
+        // Clang's MSVC target does not define __GNUC__, so FLINT's fallback
+        // erases __attribute__, including vector_size in Clang's intrinsics.
+        // Remove only the empty macro in the bindgen overlay. Defining __GNUC__
+        // instead would select different FLINT types and break the MSVC ABI.
+        let empty_attribute = regex::Regex::new(
+            r"(?m)^[\t ]*#[\t ]*define[\t ]+__attribute__\([\t ]*\w+[\t ]*\)[\t ]*\r?$",
+        )?;
+        let patched = empty_attribute.replace_all(&source, "");
+        if patched != source {
+            std::fs::write(&header, patched.as_bytes())
+                .with_context(|| format!("Failed to patch `{}`", header.display()))?;
+        }
+        Ok(())
+    }
+
     // Copy all FLINT headers to self.overlay_dir, and apply patches.
     // Returns all FLINT headers that bindgen should visit.
     fn flint_headers(&self) -> Result<Vec<PathBuf>> {
@@ -164,6 +184,9 @@ impl<'a> BindingGeneration<'a> {
 
         headers.sort();
 
+        if self.target == Target::WindowsMsvc {
+            self.preserve_clang_attributes()?;
+        }
         self.patch_flint_mpoly_void_ring_type()?;
 
         Ok(headers)
@@ -332,9 +355,9 @@ impl<'a> BindingGeneration<'a> {
                                     builder = builder.blocklist_function(format!("^{item}$"));
                                 }
                             }
-                            let bindings = builder
-                                .generate()
-                                .context("Failed to generate FLINT type bindings")?;
+                            let bindings = builder.generate().with_context(|| {
+                                format!("Failed to generate FLINT bindings for `{header_name}`")
+                            })?;
                             let stem = Path::new(&h)
                                 .file_stem()
                                 .and_then(std::ffi::OsStr::to_str)
