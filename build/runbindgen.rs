@@ -315,6 +315,14 @@ impl<'a> BindingGeneration<'a> {
                                 .layout_tests(false)
                                 .formatter(bindgen::Formatter::Prettyplease);
 
+                            if self.target == Target::WindowsMsvc {
+                                // Bindgen force-includes this before parsing h.
+                                builder = builder.header_contents(
+                                    "flint_bindgen_msvc.h",
+                                    include_str!("bindgen_msvc.h"),
+                                );
+                            }
+
                             // FLINT instantiates the fq matrix and polynomial
                             // APIs from `fq_{mat,poly}_templates.h`. Clang
                             // attributes those declarations to the included
