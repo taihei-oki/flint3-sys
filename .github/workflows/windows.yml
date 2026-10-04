@@ -109,7 +109,6 @@ jobs:
     env:
       RUSTUP_TOOLCHAIN: stable-x86_64-pc-windows-msvc
       VCPKG_COMMIT: 5dd2e1600d049b498ff9fb9fe15997533ae0c804
-      VCPKG_ROOT: ${{ github.workspace }}\.ci\vcpkg
       VCPKGRS_DYNAMIC: "1"
       VCPKGRS_TRIPLET: x64-windows
       LIBCLANG_PATH: C:\Program Files\LLVM\bin
@@ -134,9 +133,10 @@ jobs:
       - name: Install Rust
         run: rustup toolchain install $env:RUSTUP_TOOLCHAIN --profile minimal --no-self-update
 
-      - name: Prepare native dependency cache
+      - name: Prepare native dependencies
         id: native
         run: |
+          "VCPKG_ROOT=$env:GITHUB_WORKSPACE\.ci\vcpkg" >> $env:GITHUB_ENV
           "image=$env:ImageOS-$env:ImageVersion" >> $env:GITHUB_OUTPUT
           New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\vcpkg-cache" | Out-Null
           "VCPKG_BINARY_SOURCES=clear;files,$env:RUNNER_TEMP\vcpkg-cache,readwrite" >> $env:GITHUB_ENV

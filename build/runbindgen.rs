@@ -32,7 +32,7 @@ static SKIP_HEADERS: &[&str] = &[
     r"^mpn_extras\.h$",
 ];
 
-// Some public headers repeat declarations from other headers. In principle
+// Some headers repeat declarations from other headers. In principle
 // bindgen can handle that, but since we call bindgen separately on every header
 // file, it loses the information. We Keep this as a small hand-curated list
 // rather than adding complex global dedup logic.
@@ -50,6 +50,8 @@ static SKIP_ITEMS: &[(&str, &[&str])] = &[
         ],
     ),
     ("mpn_mod.h", &["gr_ctx_init_mpn_mod"]),
+    // CMake also installs this internal header alongside acb_dirichlet.h.
+    ("secondary_zeta.h", &["acb_dirichlet_secondary_zeta"]),
 ];
 
 fn clang_path(path: &Path) -> Result<String> {

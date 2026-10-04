@@ -42,10 +42,35 @@ fn run(mut command: Command) -> Result<()> {
     Ok(())
 }
 
-fn build_command(program: &str, root: &Path, tmp_dir: &str) -> Command {
+fn build_command(program: &str, root: &Path, tmp_dir: &str) -> Result<Command> {
     let mut command = Command::new(program);
     command.current_dir(root).env("TMPDIR", tmp_dir);
-    command
+
+    // MSYS2 converts ACLOCAL_PATH to Windows syntax when launching native Cargo.
+    // Convert it back for Autotools, preserving custom macro search directories.
+    #[cfg(windows)]
+    if let Some(paths) = std::env::var_os("ACLOCAL_PATH") {
+        let paths = paths.to_str().context("Non-Unicode ACLOCAL_PATH")?;
+        let bytes = paths.as_bytes();
+        let has_drive_letter =
+            bytes.len() >= 2 && bytes[0].is_ascii_alphabetic() && bytes[1] == b':';
+        // Leave empty and already-POSIX path lists alone.
+        if paths.contains([';', '\\']) || has_drive_letter {
+            let output = Command::new("cygpath")
+                .args(["--unix", "--path", "--", paths])
+                .output()
+                .context("Could not run cygpath to convert ACLOCAL_PATH")?;
+            anyhow::ensure!(
+                output.status.success(),
+                "cygpath failed for ACLOCAL_PATH: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            let paths = String::from_utf8(output.stdout)?;
+            command.env("ACLOCAL_PATH", paths.trim_end_matches(['\r', '\n']));
+        }
+    }
+
+    Ok(command)
 }
 
 enum MakeAction {
@@ -55,7 +80,7 @@ enum MakeAction {
 }
 
 fn make(root: &Path, tmp_dir: &str, action: MakeAction) -> Result<()> {
-    let mut command = build_command("make", root, tmp_dir);
+    let mut command = build_command("make", root, tmp_dir)?;
     if cfg!(windows) {
         // Cargo's Windows semaphore jobserver is incompatible with MSYS make.
         command.env_remove("MAKEFLAGS");
@@ -258,7 +283,7 @@ impl Build {
         );
 
         if !flint_root_dir.join("configure").is_file() {
-            let mut bootstrap = build_command("sh", &flint_root_dir, &tmp_dir);
+            let mut bootstrap = build_command("sh", &flint_root_dir, &tmp_dir)?;
             bootstrap.arg("./bootstrap.sh");
             run(bootstrap)?;
         }
@@ -269,7 +294,7 @@ impl Build {
     }
 
     fn configure_flint(&self, root: &Path, tmp_dir: &str, prefix: &str) -> Result<()> {
-        let mut configure = build_command("sh", root, tmp_dir);
+        let mut configure = build_command("sh", root, tmp_dir)?;
         configure.args(["./configure", "--prefix", prefix, "--disable-shared"]);
         if self.target == Target::WindowsGnu {
             configure.arg("ABI=64");
@@ -392,6 +417,8 @@ fn main() -> Result<()> {
     for name in CONFIGURE_ENV {
         println!("cargo::rerun-if-env-changed={name}");
     }
+    #[cfg(windows)]
+    println!("cargo::rerun-if-env-changed=ACLOCAL_PATH");
     let build = Build::new()?;
 
     build.build_flint()?;
