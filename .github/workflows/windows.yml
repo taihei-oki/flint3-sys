@@ -1,0 +1,167 @@
+name: Windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "1"
+
+jobs:
+  gnu:
+    name: Windows GNU (${{ matrix.name }})
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      RUSTUP_TOOLCHAIN: stable-x86_64-pc-windows-gnu
+      CC: gcc
+      CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: gcc
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: bundled
+            features: ""
+            packages: ""
+          - name: bundled-gmp-mpfr
+            features: gmp-mpfr-sys
+            packages: ""
+          - name: generated-bindings
+            features: run-bindgen
+            packages: clang:p
+          - name: system-flint
+            features: use-system-libs,run-bindgen
+            packages: flint:p pkgconf:p clang:p
+    steps:
+      - name: Preserve shell script line endings
+        shell: pwsh
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install Rust
+        shell: pwsh
+        run: >-
+          rustup toolchain install $env:RUSTUP_TOOLCHAIN
+          --profile minimal --no-self-update --force-non-host
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          # Match the MSVCRT runtime of the official windows-gnu toolchain.
+          msystem: MINGW64
+          update: true
+          install: >-
+            autoconf
+            automake
+            libtool
+            make
+            m4
+            diffutils
+          pacboy: >-
+            gcc:p
+            gmp:p
+            mpfr:p
+            ${{ matrix.packages }}
+
+      - name: Fingerprint native dependencies
+        id: native
+        run: |
+          set -euo pipefail
+          packages=$(pacman -Q | sha256sum | cut -d ' ' -f 1)
+          echo "packages=$packages" >> "$(cygpath -u "$GITHUB_OUTPUT")"
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.name }}-${{ steps.native.outputs.packages }}
+
+      - name: Test
+        env:
+          FEATURES: ${{ matrix.features }}
+        run: |
+          set -euo pipefail
+          export PATH="$(cygpath -u "$USERPROFILE")/.cargo/bin:$PATH"
+          export LIBCLANG_PATH="$(cygpath -m "$MINGW_PREFIX/bin")"
+          cargo test --features "$FEATURES"
+
+  msvc:
+    name: Windows MSVC (vcpkg FLINT)
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      RUSTUP_TOOLCHAIN: stable-x86_64-pc-windows-msvc
+      VCPKG_COMMIT: 5dd2e1600d049b498ff9fb9fe15997533ae0c804
+      VCPKG_ROOT: ${{ github.workspace }}\.ci\vcpkg
+      VCPKG_BINARY_SOURCES: clear;files,${{ runner.temp }}\vcpkg-cache,readwrite
+      VCPKGRS_DYNAMIC: "1"
+      VCPKGRS_TRIPLET: x64-windows
+      LIBCLANG_PATH: C:\Program Files\LLVM\bin
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Check out vcpkg
+        uses: actions/checkout@v7
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_COMMIT }}
+          path: .ci/vcpkg
+          persist-credentials: false
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
+      - name: Install Rust
+        run: rustup toolchain install $env:RUSTUP_TOOLCHAIN --profile minimal --no-self-update
+
+      - name: Prepare native dependency cache
+        id: native
+        run: |
+          "image=$env:ImageOS-$env:ImageVersion" >> $env:GITHUB_OUTPUT
+          New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\vcpkg-cache" | Out-Null
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}\vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-
+
+      - name: Bootstrap vcpkg
+        run: '& "$env:VCPKG_ROOT\bootstrap-vcpkg.bat" -disableMetrics'
+
+      - name: Install FLINT and its dependencies
+        run: '& "$env:VCPKG_ROOT\vcpkg.exe" install "flint:$env:VCPKGRS_TRIPLET"'
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ env.VCPKGRS_TRIPLET }}-${{ env.VCPKG_COMMIT }}-${{ steps.native.outputs.image }}
+
+      - name: Test with regenerated MSVC bindings
+        run: |
+          if (!(Test-Path "$env:LIBCLANG_PATH\libclang.dll")) {
+            throw "The runner's LLVM installation does not contain libclang.dll"
+          }
+          $env:PATH = "$env:VCPKG_ROOT\installed\$env:VCPKGRS_TRIPLET\bin;$env:PATH"
+          cargo test --features use-system-libs,run-bindgen

@@ -17685,8 +17685,6 @@ pub struct __FLINT_FILE {
     _unused: [u8; 0],
 }
 pub type FLINT_FILE = __FLINT_FILE;
-pub type ulong = ::std::os::raw::c_ulong;
-pub type slong = ::std::os::raw::c_long;
 pub type flint_bitcnt_t = ulong;
 pub type nn_ptr = *mut ulong;
 pub type nn_srcptr = *const ulong;

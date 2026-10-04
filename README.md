@@ -111,3 +111,19 @@ To update the bundled version of FLINT:
 2. Run `KEEP_BINDGEN_OUTPUT=1 cargo build -F run-bindgen` to regenerate `./bindgen/flint.rs`.
 3. Test thoroughly.
 4. Commit the changes.
+
+## Windows
+
+Native 64-bit Windows builds support the following configurations:
+
+- **GNU (`x86_64-pc-windows-gnu`)**: Use MSYS2 MINGW64 with GCC, Autotools, make, m4, GMP, and MPFR. Initialize the FLINT submodule with LF line endings and use paths without spaces.
+- **MSVC (`x86_64-pc-windows-msvc`)**: Use Visual Studio C++ Build Tools, LLVM/libclang, and vcpkg's dynamic `flint:x64-windows` package. Set `VCPKG_ROOT`, `VCPKGRS_TRIPLET=x64-windows`, `VCPKGRS_DYNAMIC=1`, and `LIBCLANG_PATH`; add the vcpkg DLL directory to `PATH`. Both features below are required; `gmp-mpfr-sys` is unsupported on MSVC.
+
+```sh
+# GNU (MSYS2 MINGW64)
+cargo +stable-x86_64-pc-windows-gnu test
+# MSVC (developer PowerShell)
+cargo +stable-x86_64-pc-windows-msvc test --features use-system-libs,run-bindgen
+```
+
+See the [Windows CI](.github/workflows/windows.yml) for complete GNU and MSVC setup steps. MSVC bindings are generated at build time; `KEEP_BINDGEN_OUTPUT` is not supported on MSVC.
